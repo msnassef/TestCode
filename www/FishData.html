@@ -1,0 +1,227 @@
+﻿<div data-role="view" id="divDailyFishData" data-transition="slide:right" data-init="initializeView">
+    <header data-role="header">
+        <div data-role="navbar">
+            <a class="nav-button" data-align="left" data-role="backbutton">رجوع</a>
+            <span>بيانات الاسماك اليومية</span>
+            <a data-align="right" data-role="button" class="nav-button" href="mainMenu.html">الرئيسية</a>
+        </div>
+    </header>
+
+    <ul data-role="listview" data-layout="mobile-view" data-style="inset">
+        <li class="li-logo">
+            <label>
+                <h2>بيانات الاسماك اليومية</h2>
+            </label>
+        </li>
+        <li>
+            <label for="txtDate">التاريخ:</label>
+            <input type="date" id="txtDate" /></li>
+        <li>
+            <label for="selectCompany">الشركة:</label>
+            <select id="selectCompany">
+                <option value="-1">-- اختر -- </option>
+            </select>
+
+        </li>
+        <li>
+            <a id="btnLoadData" type="button" data-role="button">تحميل البيانات</a>
+            <a id="btnSave" type="button" data-role="button" class="hidden">حفظ البيانات</a>
+        </li>
+    </ul>
+    <ul id="dataListView" data-role="listview" data-layout="mobile-view" data-style="inset">
+    </ul>
+</div>
+<style scoped="scoped">
+    #btnLoadData {
+        float: left;
+        margin-left: 10px;
+    }
+
+    #btnSave {
+        float: left;
+        margin-left: 10px;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .dtaListHeader {
+        width: 100%;
+    }
+
+        .dtaListHeader h3, .col1, .col2, .col3, .col4 {
+            display: inline !important;
+            float: right !important;
+            text-align: center !important;
+            margin: 0px !important;
+        }
+
+            .col3 input[type="number"], .col4 input[type="number"] {
+                width: 15% !important;
+            }
+
+            .col3 input[type="number"], .col4 input[type="number"] {
+                position: inherit !important;
+                float: right;
+                margin: 0px !important;
+                width: 100% !important;
+            }
+
+    .hcol1, .col1 {
+        width: 15% !important;
+    }
+
+    .hcol2, .col2 {
+        width: 30% !important;
+    }
+
+    .hcol3, .col3 {
+        width: 20%;
+    }
+
+    .hcol4, .col4 {
+        margin-right: 20px !important;
+        width: 20%;
+    }
+</style>
+<script>
+    var companyCombo;
+    var txtDate;
+    var btnLoadData;
+    var btnSave;
+    var dataListView;
+    function initializeView(e) {
+        btnLoadData = e.view.element.find("#btnLoadData");
+        btnLoadData.click(btnLoadData_Click);
+        btnSave = e.view.element.find("#btnSave");
+        btnSave.click(btnSave_Click);
+        companyCombo = e.view.element.find("#selectCompany");
+        companyCombo.change(selectCompanySelectionChanged);
+        txtDate = e.view.element.find("#txtDate");
+        dataListView = e.view.element.find("#dataListView");
+        app.pane.loader.show();
+        service.call("GetAllFishingCompanies", {}, onGetAllFishingCompaniesSucceeded, onGetAllFishingCompaniesError);
+    }
+
+    //#region Combo Companies Methods
+    function onGetAllFishingCompaniesSucceeded(data) {
+        var companiesData = eval(data);
+        for (i = 0; i < companiesData.length; i++) {
+            companyCombo.append(new Option(companiesData[i].companyName_ar, companiesData[i].companyID));
+        }
+        app.pane.loader.hide();
+    }
+    function onGetAllFishingCompaniesError(error) {
+        alert('error'); debugger;
+        app.pane.loader.hide();
+    }
+    function selectCompanySelectionChanged() {
+        //alert('changed');
+    }
+    //#endregion
+
+    //#region LoadData
+    function btnLoadData_Click() {
+        var selectedDate = txtDate.val();
+        var selectedCompany = companyCombo.val();
+        if (selectedDate == "") {
+            alert("فضلا اختر تاريخ");
+            return false;
+        }
+        if (selectedCompany == "-1") {
+            alert("فضلا اختر شركة");
+            return false;
+        }
+        app.pane.loader.show();
+        service.call("GetDailyTransaction", { trans_dat: selectedDate, comp_id: selectedCompany }, onLoadDataSucceeded, onLoadDataError);
+    }
+    function onLoadDataSucceeded(data) {
+        var dailyTrans = eval(data);
+        var innerhtml = "<li class='dtaListHeader' ><h3 class='hcol1'>رمز السمك</h3>" +
+            "<h3 class='hcol2'>اسم السمك</h3><h3 class='hcol3'>الكمية</h3><h3 class='hcol4'>سعر الجملة</h3></li>";
+        var template = "<li class='liDataRow'>" +
+                        "<input class='hdnTRANSACTIONID' type='hidden' value='#TRANSACTIONID'/>" +
+                        "<input class='hdnFISH_ID' type='hidden' value='#FISH_ID'/>" +
+                        "<div class='col1'>#FISH_CODE</div>" +
+                        "<div class='col2'>#NAME_A</div>" +
+                        "<div class='col3'><input class='numqty' type='number'  value='#QTY'/></div>" +
+                        "<div class='col4'><input class='numwholePrice' type='number'  value='#WHOLESALE_PRICE'/></div>" +
+                        "</li>";
+        for (i = 0; i < dailyTrans.length; i++) {
+            innerhtml += template.replace('#TRANSACTIONID', dailyTrans[i].TRANSACTIONID).
+                                replace('#FISH_ID', dailyTrans[i].FISH_ID).
+                                  replace('#FISH_CODE', dailyTrans[i].FISH_CODE).
+                                  replace('#NAME_A', dailyTrans[i].NAME_A).
+                                  replace('#QTY', dailyTrans[i].QTY == "" ? 0 : dailyTrans[i].QTY).
+                                  //replace('#QTY', dailyTrans[i].QTY).
+                                  replace('#WHOLESALE_PRICE', dailyTrans[i].WHOLESALE_PRICE == "" ? 0 : dailyTrans[i].WHOLESALE_PRICE);
+            //replace('#WHOLESALE_PRICE', dailyTrans[i].WHOLESALE_PRICE);
+        }
+
+
+        dataListView.html(innerhtml);
+
+
+        btnSave.removeClass('hidden');
+        btnLoadData.removeClass('km-state-active');
+        app.pane.loader.hide();
+
+
+
+    }
+    function onLoadDataError(error) {
+        debugger;
+        app.pane.loader.hide();
+    }
+    //#endregion
+
+    //#region Save Data
+    function btnSave_Click() {
+        btnSave.removeClass('km-state-active');
+
+
+        var dataToSend = {
+            transactions: []
+        };
+
+        var selectedDate = txtDate.val();
+        var selectedCompany = companyCombo.val();
+
+        var ii = 0;
+        $('.liDataRow').each(function (i, obj) {
+            var transactionID = $($(this).find('.hdnTRANSACTIONID')[0]).val();
+            var fishID = $($(this).find('.hdnFISH_ID')[0]).val();
+            var fishCode = $($(this).find('.col1')[0]).text();
+            var name = $($(this).find('.col2')[0]).text();
+            var qty = $($(this).find('.numqty')[0]).val();
+            var wholePrice = $($(this).find('.numwholePrice')[0]).val();
+
+            dataToSend.transactions.push({
+                "ID": transactionID,
+                "FISH_ID": fishID,
+                "FISH_CODE": fishID,//fish code saving fishid
+                // "NAME_A": name,
+                "QTY": qty,
+                "WHOLESALE_PRICE": wholePrice
+            });
+        });
+
+        if (selectedDate == "") {
+            alert("فضلا اختر تاريخ");
+            return false;
+        }
+        if (selectedCompany == "-1") {
+            alert("فضلا اختر شركة");
+            return false;
+        }
+        app.pane.loader.show();
+
+        service.call("SaveDailyTransaction", { transactions: JSON.stringify(dataToSend.transactions), userName: succeededUsername, date: selectedDate, companyID: selectedCompany }, onSaveSucceeded, onSaveError);
+    }
+    function onSaveSucceeded(data) {
+        app.pane.loader.hide();
+    }
+    function onSaveError(error) { }
+    //#endregion
+</script>

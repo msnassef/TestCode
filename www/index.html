@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>&nbsp;</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="kendoui/styles/kendo.common.min.css" rel="stylesheet" />
+    <link href="kendoui/styles/kendo.default.min.css" rel="stylesheet" />
+    <link href="kendoui/styles/kendo.mobile.all.min.css" rel="stylesheet" />
+    <link href="kendoui/styles/kendo.rtl.min.css" rel="stylesheet" />
+
+    <!--Core Scripts-->
+    <script type="text/javascript" charset="utf-8" src="CoreScripts/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="CoreScripts/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="CoreScripts/cordova.js"></script>
+    <!--References for calling service using service object-->
+    <script type="text/javascript" src="CoreScripts/jMsAjax.js"></script>
+    <script type="text/javascript" src="CoreScripts/ws.js"></script>
+    <!--End of References for calling service using service object-->
+    <!--End of Core Scripts-->
+
+    <!--Kendoui-->
+    <script src="kendoui/js/jquery.min.js"></script>
+    <script src="kendoui/js/kendo.mobile.min.js"></script>
+    <!--End of Kendoui-->
+
+
+    <script src="moe/Scripts/Index.js"></script>
+
+
+</head>
+<body class="k-rtl">
+
+
+
+
+    <div data-role="view" id="customloginView" style="height: 100%;">
+        <div data-role="header">
+            <div data-role="navbar">
+                <span>تسجيل الدخول</span>
+            </div>
+        </div>
+
+        <ul data-role="listview" data-style="inset">
+            <li class="li-logo">
+                <img src="MOE/Images/logo.png" class="logoImage" />
+            </li>
+            <li class="li-logo">
+
+                <label>
+                    <h2>خدمات وزارة البيئة</h2>
+                </label>
+            </li>
+            <li>
+                <label for="username">اسم المستخدم:</label>
+                <input type="text" id="txtUsername" /></li>
+            <li>
+                <label for="password">كلمة المرور:</label>
+                <input type="password" id="txtPassword" /></li>
+        </ul>
+        <a id="btnLogin" type="button" data-role="button" style="float: left; left: 10px;">تسجيل الدخول</a>
+    </div>
+
+    <div data-role="modalview" id="modalview-login" style="width: 95%; height: 18em;">
+        <div data-role="header">
+            <div data-role="navbar">
+                <span>خطأ في تسجيل الدخول</span>                
+            </div>
+        </div>
+        <h3 style="height:5em">
+        اسم المستخدم غير صحيح أو كلمة المرور غير صحيحه، برجاء التأكد.
+            </h3>
+        <a data-click="closeModalViewLogin" id="modalview-login-button" type="button" data-role="button">اعادة المحاولة</a>        
+    </div>
+
+    <style scoped>
+        .camera-image {
+            width: 20%;
+        }
+
+        #modalview-login-button,
+        #modalview-reg-button,
+        #modalview-open-button {
+            display: block;
+            text-align: center;
+            margin: .6em .8em 0;
+            font-size: 1.2em;
+        }
+
+        #modalview-open-button {
+            margin: 0 3em;
+            padding: .5em;
+        }
+
+        .km-flat #modalview-open-button {
+            color: #fff;
+        }
+
+        #modalview-camera {
+            text-align: center;
+        }
+
+            #modalview-camera img {
+                display: block;
+                margin: 30px auto;
+            }
+
+            #modalview-camera .km-content,
+            .km-ios #modalview-login .km-content {
+                background: url(../../content/shared/images/patterns/pattern1.png) repeat 0 0;
+            }
+
+        .km-ios #modalview-camera .km-button,
+        .km-ios #modalview-login .km-button,
+        .km-ios #modalview-camera .km-navbar,
+        .km-ios #modalview-login .km-header,
+        .km-blackberry #modalview-camera .km-navbar,
+        .km-blackberry #modalview-login .km-navbar {
+            background-color: #000;
+        }
+
+        .km-blackberry #modalview-camera .km-button {
+            color: #fff;
+        }
+
+        .km-ios #modalview-camera .km-button:active,
+        .km-ios #modalview-camera .km-state-active,
+        .km-ios #modalview-login .km-button:active,
+        .km-ios #modalview-login .km-state-active {
+            background-color: #2e2e2e;
+        }
+
+        .km-ios #modalview-login #modalview-login-button,
+        .km-flat #modalview-login #modalview-login-button {
+            background-color: Green;
+            color: #fff;
+        }
+
+        .km-tablet .km-ios #modalview-camera .km-view-title,
+        .km-tablet .km-ios #modalview-login .km-view-title {
+            color: #fff;
+            text-shadow: 0 -1px rgba(0,0,0,.5);
+        }
+
+        .km-list input[type=text]:not(.k-input),
+        .km-list input[type=password], .km-list input[type=search], .km-list input[type=number],
+        .km-list input[type=tel], .km-list input[type=url], .km-list input[type=email], .km-list input[type=file],
+        .km-list input[type=month], .km-list input[type=color], .km-list input[type=week],
+        .km-list input[type=date], .km-list input[type=time], .km-list input[type=datetime],
+        .km-list input[type=datetime-local], .km-list select:not([multiple]), .km-list .k-dropdown, .km-list textarea {
+            width: 60% !important;
+            right: 120px;
+        }
+
+        .li-logo {
+            text-align: center !important;
+        }
+
+        .logoImage {
+            width: 300px;
+        }
+
+        .km-listview-link, .km-listview-label {
+            right: 20px !important;
+        }
+
+            .km-listview-link:after, .km-listview-label:after {
+                margin-right: -10px !important;
+                position: absolute !important;
+                right: 0px !important;
+                -webkit-transform: rotate(225deg);
+            }
+    </style>
+    <script>
+        function closeModalViewLogin() {
+            $("#modalview-login").kendoMobileModalView("close");
+        }
+    </script>
+
+
+    <script>
+        var app = new kendo.mobile.Application(document.body, {
+            initial: "customloginView"
+        });
+    </script>
+</body>
+</html>

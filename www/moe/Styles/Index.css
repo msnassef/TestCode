@@ -1,0 +1,41 @@
+﻿@font-face {
+    font-family: GE_SS_Two_Medium;
+    src: url('../Font/GE_SS_Two_Medium.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    margin: 0px;
+    padding: 0px;
+    font-family: GE_SS_Two_Medium !important;
+    font-size: 10pt;
+}
+
+#indexMainDiv .head {
+    display: block;
+    margin: 1em;
+    height: 110px;
+    background: url(../images/logo.png) no-repeat center center;
+    -webkit-background-size: 100% auto;
+    background-size: contain;
+}
+
+.km-ios #indexMainDiv .head {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+
+#indexMainDiv h2 {
+    font-size: 14pt;
+    font-weight: bold;
+}
+
+#indexMainDiv p {
+    font-size: 9pt;
+}
+
+#lstLinks .km-icon {
+
+    padding-left:20px;
+}

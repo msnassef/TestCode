@@ -1,0 +1,12 @@
+﻿input[type='text'], input[type="date"],input[type="datetime-local"],input[type="time"]{
+    width:70%;
+}
+#ulSearch {
+width:99%;
+}
+    #ulSearch label {
+        width:20%;
+    }
+#btnFilter {
+    width:80%;
+}
